@@ -1,3 +1,5 @@
+##HOGWILD!: A Lock-Free Approach to Parallelizing Stochastic Gradient Descent
+根据HOGWILD!的思想，通过基于sklearn 的joblib 来实现多线程的随机梯度下降
 Generators：
 Return the data set to each threads
 Shared：
