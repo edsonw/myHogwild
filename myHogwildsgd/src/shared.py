@@ -42,6 +42,7 @@ class SharedWeights:
 
 # update weight
 def gradient_step(X, y, learning_rate):
+	
 	R.acquire()
     w = sys.modules[temp_module_name].__dict__['w']
     # caculate gradient
