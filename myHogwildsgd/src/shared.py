@@ -5,12 +5,14 @@ from ctypes import c_double
 import numpy as np
 import math
 temp_module_name = '__hogwildsgd__temp__'
-
+import threading
 
 class SharedWeights:
     """ Class to create a temporary module with the gradient function inside
         to allow multiprocessing to work for async weight updates.
     """
+    # 使用 锁确保多线程更新权重不会冲突。
+    R=threading.Lock()
     def __init__(self, size_w):
         # create a shared array
         coef_shared = Array(c_double,
@@ -40,6 +42,7 @@ class SharedWeights:
 
 # update weight
 def gradient_step(X, y, learning_rate):
+	R.acquire()
     w = sys.modules[temp_module_name].__dict__['w']
     # caculate gradient
     grad = np.dot(X.reshape(X.shape[1], X.shape[0]),
@@ -47,6 +50,7 @@ def gradient_step(X, y, learning_rate):
     # update w
     for index in np.where(abs(grad) > .01)[0]:
         w[index] -= learning_rate * grad[index, 0]
+    R.release()
 
 
 # caculate the error
